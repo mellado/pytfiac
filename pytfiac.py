@@ -107,11 +107,9 @@ class Tfiac():
 
     async def update(self):
         """Update the state of the A/C."""
-        print("Version with show-wait")
         from time import time
         if time() - self._last_seq < SHORT_WAIT:
             return
-        print("Updating status!!")
         response = await self._send(STATUS_MESSAGE.format(seq=self._seq))
         try:
             _status = dict(xmltodict.parse(response)['msg']['statusUpdateMsg'])
