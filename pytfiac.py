@@ -81,7 +81,6 @@ class Tfiac():
     @property
     def _seq(self):
         from time import time
-        self._last_seq = time()
         return str(int(time() * 1000))[-7:]
 
     async def _send(self, message):
@@ -108,9 +107,11 @@ class Tfiac():
 
     async def update(self):
         """Update the state of the A/C."""
+        print("Version with show-wait")
         from time import time
-        if time() - self._last_seq > SHORT_WAIT:
+        if time() - self._last_seq < SHORT_WAIT:
             return
+        print("Updating status!!")
         response = await self._send(STATUS_MESSAGE.format(seq=self._seq))
         try:
             _status = dict(xmltodict.parse(response)['msg']['statusUpdateMsg'])
@@ -124,6 +125,9 @@ class Tfiac():
             self._status[SWING_MODE] = self._map_winddirection(_status)
         except Exception as ex:  # pylint: disable=W0703
             _LOGGER.error(ex)
+        else:
+            self._last_seq = time()
+
 
     def _map_winddirection(self, _status):
         """Map WindDirection to swing_mode."""
