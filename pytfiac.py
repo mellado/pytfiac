@@ -126,7 +126,6 @@ class Tfiac():
         else:
             self._last_seq = time()
 
-
     def _map_winddirection(self, _status):
         """Map WindDirection to swing_mode."""
         value = 0
